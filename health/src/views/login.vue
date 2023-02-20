@@ -1,0 +1,99 @@
+<template>
+  <div>
+    <div class="form-class">
+      <el-card>
+        <el-image style="width: 100px; height: 100px" :src="url"></el-image>
+        <el-form
+          :model="ruleForm"
+          status-icon
+          :rules="rules"
+          ref="ruleForm"
+          label-width="50px"
+        >
+          <el-form-item label="账号" prop="username">
+            <el-input v-model="ruleForm.username" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input
+              type="password"
+              v-model="ruleForm.password"
+              autocomplete="off"
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('ruleForm')"
+              >提交</el-button
+            >
+            <el-button @click="resetForm('ruleForm')">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: "login",
+  data() {
+    const checkUsername = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("用户名不能为空"));
+      }
+      callback();
+    };
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        return callback(new Error("请输入密码"));
+      }
+      callback();
+    };
+    return {
+      ruleForm: {
+        username: "",
+        password: "",
+      },
+      rules: {
+        username: [{ validator: checkUsername, trigger: "blur" }],
+        password: [{ validator: validatePass, trigger: "blur" }],
+      },
+      url: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+    };
+  },
+  methods: {
+    submitForm: function (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$ajax.post("/user/login", this.ruleForm).then((res) => {
+            console.log(res);
+            // 如果数据校验成功 则向后端发送请求 进行登录
+            const tokenBody = res.data;
+            let tokenHead = tokenBody.tokenHead;
+            let token = tokenBody.token;
+            this.$store.commit("setToken", tokenHead + token);
+            // 跳转主页
+            this.$router.push("/home");
+            this.$message.success(res.msg);
+          });
+        } else {
+          console.log("error submit!!");
+          this.$message.error("用户名或密码不合法 检查后提交");
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+  },
+};
+</script>
+
+<style scoped>
+.form-class {
+  width: 40%;
+  margin: 10% 35% 30%;
+  text-align: center;
+}
+</style>
