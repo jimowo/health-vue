@@ -8,9 +8,9 @@ export default new Vuex.Store({
     token: sessionStorage.getItem("token") || '',
     username: sessionStorage.getItem("username") || '',
     avatar: sessionStorage.getItem("avatar") || '',
-    roles: JSON.parse(sessionStorage.getItem("roles")),
-    menus: JSON.parse(sessionStorage.getItem("menus")),
-    permissions: JSON.parse(sessionStorage.getItem("permissions")),
+    roles: [],
+    menus: [],
+    permissions: [],
   },
   getters: {},
   mutations: {
@@ -20,23 +20,18 @@ export default new Vuex.Store({
     },
     setUsername(state, data) {
       state.username = data;
-      sessionStorage.setItem("username", data);
     },
     setAvatar(state, data) {
       state.avatar = data;
-      sessionStorage.setItem("avatar", data);
     },
     setRoles(state, data) {
       state.roles = data;
-      sessionStorage.setItem("roles", JSON.stringify(data));
     },
     setMenus(state, data) {
       state.menus = data;
-      sessionStorage.setItem("menus", JSON.stringify(data));
     },
     setPermissions(state, data) {
       state.permissions = data;
-      sessionStorage.setItem("permissions", JSON.stringify(data));
     },
   },
   actions: {},

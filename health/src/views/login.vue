@@ -2,6 +2,7 @@
   <div>
     <div class="form-class">
       <el-card>
+        <v-icon name="house-user" scale="2"/>
         <el-image style="width: 100px; height: 100px" :src="url"></el-image>
         <el-form
           :model="ruleForm"
@@ -73,7 +74,7 @@ export default {
             let token = tokenBody.token;
             this.$store.commit("setToken", tokenHead + token);
             // 跳转主页
-            this.$router.push("/home");
+            this.$router.push("/");
             this.$message.success(res.msg);
           });
         } else {

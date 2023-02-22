@@ -4,7 +4,10 @@ import router from "./router";
 import store from "./store";
 import "@/utils/ajax";
 import "@/utils/elementui";
-import "@/assets/global.css"
+import "@/utils/fontAwesome";
+import "@/assets/global.css";
+import "@/utils/permission";
+
 
 Vue.config.productionTip = false;
 

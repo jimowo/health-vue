@@ -3,7 +3,6 @@
     <el-container class="main-class">
       <el-aside :width="'asideWidth'+'px'" style="background-color: #545c64; color: #fff">
         <el-menu
-          default-active="1-4-1"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
@@ -35,23 +34,17 @@
               clearable>
           </el-input>
           </span>
-          <el-submenu index="1">
+          <el-submenu :index="parentMenu.path" v-for="(parentMenu, index) in menus" :key="index">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <v-icon :name="parentMenu.icon" scale="1.5" class="menu-icon"/>
+              <span>{{ parentMenu.title }}</span>
             </template>
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="/home/welcome">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="1-4-1">选项1</el-menu-item>
-            </el-submenu>
+            <el-menu-item :index="children.path" v-for="(children, i) in parentMenu.children" :key="i">
+              <template>
+                <v-icon :name="children.icon" scale="1.2" class="menu-icon"/>
+                <span>{{ children.title }}</span>
+              </template>
+            </el-menu-item>
           </el-submenu>
           <el-menu-item index="2">
             <i class="el-icon-menu"></i>
@@ -89,10 +82,11 @@
         </el-header>
         <el-main>
           <el-breadcrumb separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-            <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item v-for="(item, index) in $router.currentRoute.matched" :key="index">{{
+                item.meta.title
+              }}
+            </el-breadcrumb-item>
           </el-breadcrumb>
           <router-view/>
         </el-main>
@@ -109,17 +103,18 @@ export default {
   name: "home",
   // vue计算属性
   computed: {
-    ...mapState(["username", "avatar", "roles", "menus", "permissions"])
+    ...mapState(["username", "avatar", "menus"])
   },
   created() {
     // 更新名字
-    this.name = this.roles[0].label;
+    // this.name = this.roles[0].label;
+    console.log("菜单", this.menus)
   },
   data() {
     return {
       name: "admin",
-      isCollapse: false,
-      collapseBtnClass: 'el-icon-s-unfold',
+      isCollapse: true,
+      collapseBtnClass: 'el-icon-s-fold',
       asideWidth: 200,
       inputSearch: ""
     }
@@ -247,6 +242,20 @@ body > .el-container {
 .searchInput {
   line-height: 60px;
   width: 180px;
+}
+
+.el-submenu .el-menu-item {
+  padding-right: 15px;
+}
+
+.menu-icon {
+  width: auto;
+  height: 1em; /* 或任意其它字体大小相对值 */
+
+  /* 要在 Safari 中正常工作，需要再引入如下两行代码 */
+  max-width: 100%;
+  max-height: 100%;
+  padding-right: 10px;
 }
 
 </style>
