@@ -36,12 +36,12 @@
           </span>
           <el-submenu :index="parentMenu.path" v-for="(parentMenu, index) in menus" :key="index">
             <template slot="title">
-              <v-icon :name="parentMenu.icon" scale="1.5" class="menu-icon"/>
+              <v-icon :name="parentMenu.icon" scale="1.5" class="menu-icon icon-antiquewhite"/>
               <span>{{ parentMenu.title }}</span>
             </template>
             <el-menu-item :index="children.path" v-for="(children, i) in parentMenu.children" :key="i">
               <template>
-                <v-icon :name="children.icon" scale="1.2" class="menu-icon"/>
+                <v-icon :name="children.icon" scale="1.2" class="menu-icon icon-antiquewhite"/>
                 <span>{{ children.title }}</span>
               </template>
             </el-menu-item>
@@ -107,8 +107,8 @@ export default {
   },
   created() {
     // 更新名字
-    // this.name = this.roles[0].label;
-    console.log("菜单", this.menus)
+    this.name = this.username;
+    // console.log("菜单", this.menus)
   },
   data() {
     return {
@@ -177,7 +177,6 @@ export default {
   background-color: #E9EEF3;
   color: #333;
   text-align: center;
-  line-height: 160px;
 }
 
 body > .el-container {

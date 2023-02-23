@@ -1,8 +1,39 @@
 /* 编写全局样式 */
 
+
 /* 主页面样式 */
-html, body, #app {
+
+html,
+body,
+#app {
     height: 100%;
     margin: 0;
     padding: 0;
+}
+
+
+/* 表格样式 */
+
+.el-table {
+    width: 100%
+}
+
+
+/* 面包屑导航的全局样式 */
+
+.el-breadcrumb {
+    font-size: 16px;
+}
+
+.el-pagination {
+    margin-top: 10px;
+    text-align: right;
+    line-height: 40px;
+}
+
+
+/* 图标全局样式 */
+
+.icon-antiquewhite {
+    color: antiquewhite;
 }
