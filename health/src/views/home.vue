@@ -4,10 +4,9 @@
       <el-aside :width="'asideWidth'+'px'" style="background-color: #545c64; color: #fff">
         <el-menu
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
           background-color="#545c64"
           text-color="#fff"
+          :default-active="activePath"
           unique-opened
           router
           :collapse-transition="true"
@@ -39,7 +38,7 @@
               <v-icon :name="parentMenu.icon" scale="1.5" class="menu-icon icon-antiquewhite"/>
               <span>{{ parentMenu.title }}</span>
             </template>
-            <el-menu-item :index="children.path" v-for="(children, i) in parentMenu.children" :key="i">
+            <el-menu-item :index="children.path" v-for="(children, i) in parentMenu.children" :key="i" @click="savePath(children.path)">
               <template>
                 <v-icon :name="children.icon" scale="1.2" class="menu-icon icon-antiquewhite"/>
                 <span>{{ children.title }}</span>
@@ -116,15 +115,14 @@ export default {
       isCollapse: true,
       collapseBtnClass: 'el-icon-s-fold',
       asideWidth: 200,
-      inputSearch: ""
+      inputSearch: "",
+      activePath: sessionStorage.getItem("activePath")
     }
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    savePath(path) {
+      sessionStorage.setItem("activePath", path);
+      this.activePath = path;
     },
     collapse() {
       this.isCollapse = !this.isCollapse;
