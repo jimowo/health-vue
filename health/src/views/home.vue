@@ -67,12 +67,12 @@
               <span :class="collapseBtnClass" style="cursor: pointer;font-size: 20px;color: darkorange"
                     @click="collapse"></span>
             </el-col>
-            <el-col :span="10">
+            <el-col :span="18">
               <div class="title">
                 个人健康管理平台<span> —— ({{ name }})</span>
               </div>
             </el-col>
-            <el-col :span="10" style="text-align: right">
+            <el-col :span="2" style="text-align: right">
               <el-avatar :size="50" icon="el-icon-user-solid" :src="avatar"/>
             </el-col>
             <el-col :span="3" class="logout">

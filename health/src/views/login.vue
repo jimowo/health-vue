@@ -2,7 +2,6 @@
   <div>
     <div class="form-class">
       <el-card>
-        <v-icon name="house-user" scale="2"/>
         <el-image style="width: 100px; height: 100px" :src="url"></el-image>
         <el-form
           :model="ruleForm"
@@ -67,7 +66,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$ajax.post("/user/login", this.ruleForm).then((res) => {
-            console.log(res);
             // 如果数据校验成功 则向后端发送请求 进行登录
             const tokenBody = res.data;
             let tokenHead = tokenBody.tokenHead;
@@ -78,7 +76,6 @@ export default {
             this.$message.success(res.msg);
           });
         } else {
-          console.log("error submit!!");
           this.$message.error("用户名或密码不合法 检查后提交");
           return false;
         }
