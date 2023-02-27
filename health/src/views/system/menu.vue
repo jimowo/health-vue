@@ -153,21 +153,48 @@ export default {
       },
       formLabelWidth: "120px",
       rules: {
-        label: [
-          { required: true, message: "请输入权限名", trigger: "blur" },
+        path: [
+          { required: true, message: "请输入路由", trigger: "blur" },
           {
             min: 1,
-            max: 50,
-            message: "权限标签的长度位1-50之间",
+            max: 100,
+            message: "path的长度位1-100之间",
             trigger: "blur",
           },
         ],
-        code: [
-          { required: true, message: "请输入权限码", trigger: "blur" },
+        icon: [
+          { required: true, message: "请输入图标", trigger: "blur" },
           {
             min: 1,
-            max: 20,
-            message: "权限标签的长度位1-20之间",
+            max: 50,
+            message: "icon的长度位1-20之间",
+            trigger: "blur",
+          },
+        ],
+        title: [
+          { required: true, message: "请输入菜单名", trigger: "blur" },
+          {
+            min: 1,
+            max: 50,
+            message: "title的长度位1-20之间",
+            trigger: "blur",
+          },
+        ],
+        component: [
+          { required: true, message: "请输入组件", trigger: "blur" },
+          {
+            min: 1,
+            max: 50,
+            message: "component的长度位1-20之间",
+            trigger: "blur",
+          },
+        ],
+        parent_id: [
+          { required: true, message: "请输入父级菜单id", trigger: "blur" },
+          {
+            min: 1,
+            max: 50,
+            message: "parent_id的长度位1-20之间",
             trigger: "blur",
           },
         ],
