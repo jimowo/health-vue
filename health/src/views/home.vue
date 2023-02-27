@@ -35,12 +35,12 @@
           </span>
           <el-submenu :index="parentMenu.path" v-for="(parentMenu, index) in menus" :key="index">
             <template slot="title">
-              <v-icon :name="parentMenu.icon" scale="1.5" class="menu-icon icon-antiquewhite"/>
+              <v-icon :name="parentMenu.icon" scale="1.5" class="menu-icon"/>
               <span>{{ parentMenu.title }}</span>
             </template>
             <el-menu-item :index="children.path" v-for="(children, i) in parentMenu.children" :key="i" @click="savePath(children.path)">
               <template>
-                <v-icon :name="children.icon" scale="1.2" class="menu-icon icon-antiquewhite"/>
+                <v-icon :name="children.icon" scale="1.2" class="menu-icon"/>
                 <span>{{ children.title }}</span>
               </template>
             </el-menu-item>
