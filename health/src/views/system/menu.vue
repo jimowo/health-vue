@@ -67,16 +67,36 @@
           <el-input v-model="insertForm.path" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="图标" :label-width="formLabelWidth" prop="icon">
-          <el-input v-model="insertForm.icon" autocomplete="off"></el-input>
+          <!-- <el-input v-model="insertForm.icon" autocomplete="off"></el-input> -->
+          <el-select v-model="insertForm.icon">
+            <el-option v-for="(icon, index) in iconList" :key="index" :value="icon">
+              <v-icon :name="icon" class="menu-icon"/>
+              <span>{{ icon }}</span>
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="菜单名" :label-width="formLabelWidth" prop="title">
           <el-input v-model="insertForm.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="前端组件" :label-width="formLabelWidth" prop="component">
-          <el-input v-model="insertForm.component" autocomplete="off"></el-input>
+        <el-form-item
+          label="前端组件"
+          :label-width="formLabelWidth"
+          prop="component"
+        >
+          <el-input
+            v-model="insertForm.component"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="父菜单id" :label-width="formLabelWidth" prop="parent_id">
-          <el-input v-model="insertForm.parent_id" autocomplete="off"></el-input>
+        <el-form-item
+          label="父菜单id"
+          :label-width="formLabelWidth"
+          prop="parent_id"
+        >
+          <el-input
+            v-model="insertForm.parent_id"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -85,7 +105,7 @@
       </div>
     </el-dialog>
     <el-dialog
-      title="修改菜单限"
+      title="修改菜单"
       :visible.sync="updateFormVisible"
       @close="dialogClose"
     >
@@ -106,11 +126,25 @@
         <el-form-item label="菜单名" :label-width="formLabelWidth" prop="title">
           <el-input v-model="updateForm.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="前端组件" :label-width="formLabelWidth" prop="component">
-          <el-input v-model="updateForm.component" autocomplete="off"></el-input>
+        <el-form-item
+          label="前端组件"
+          :label-width="formLabelWidth"
+          prop="component"
+        >
+          <el-input
+            v-model="updateForm.component"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="父菜单id" :label-width="formLabelWidth" prop="parent_id">
-          <el-input v-model="updateForm.parent_id" autocomplete="off"></el-input>
+        <el-form-item
+          label="父菜单id"
+          :label-width="formLabelWidth"
+          prop="parent_id"
+        >
+          <el-input
+            v-model="updateForm.parent_id"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -122,13 +156,27 @@
 </template>
 
 <script>
+import icons from "@/utils/icons.js"
+
 export default {
   name: "menu",
   data() {
+    /**
+     * parent_id 校验
+     */
+    var validateId = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("父菜单不能为空"));
+      }
+      if (!Number.isInteger(value)) {
+        return callback(new Error('请输入数字值'));
+      }
+    };
     return {
       tableData: [],
       currentPage: 1,
       totalPage: 0,
+      iconList: icons,
       queryInfo: {
         pageNumber: 1,
         pageSize: 5,
@@ -189,15 +237,7 @@ export default {
             trigger: "blur",
           },
         ],
-        parent_id: [
-          { required: true, message: "请输入父级菜单id", trigger: "blur" },
-          {
-            min: 1,
-            max: 50,
-            message: "parent_id的长度位1-20之间",
-            trigger: "blur",
-          },
-        ],
+        parent_id: [{ validator: validateId, trigger: "blur" }],
       },
     };
   },
