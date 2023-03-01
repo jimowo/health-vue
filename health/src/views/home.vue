@@ -45,18 +45,6 @@
               </template>
             </el-menu-item>
           </el-submenu>
-          <el-menu-item index="2">
-            <i class="el-icon-menu"></i>
-            <span slot="title">导航二</span>
-          </el-menu-item>
-          <el-menu-item index="3" disabled>
-            <i class="el-icon-document"></i>
-            <span slot="title">导航三</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span slot="title">导航四</span>
-          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-container>
@@ -68,7 +56,7 @@
             </el-col>
             <el-col :span="18">
               <div class="title">
-                个人健康管理平台<span> —— ({{ name }})</span>
+                个人健康管理平台
               </div>
             </el-col>
             <el-col :span="2" style="text-align: right">
@@ -111,7 +99,6 @@ export default {
   },
   data() {
     return {
-      name: "admin",
       isCollapse: true,
       collapseBtnClass: 'el-icon-s-fold',
       asideWidth: 200,

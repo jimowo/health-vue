@@ -6,13 +6,13 @@ import "@/utils/ajax";
 import "@/utils/elementui";
 import "@/utils/fontAwesome";
 import "@/assets/global.css";
-import "@/utils/permission";
+import "@/utils/permission.js";
 
 
 Vue.config.productionTip = false;
 
 new Vue({
-  router,
-  store,
-  render: (h) => h(App),
+    router,
+    store,
+    render: (h) => h(App),
 }).$mount("#app");

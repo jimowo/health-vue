@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="8">
           <el-input
-            placeholder="请输入权限信息"
+            placeholder="请输入菜单信息"
             v-model="queryInfo.queryString"
             clearable
           >
@@ -91,10 +91,10 @@
         <el-form-item
           label="父菜单id"
           :label-width="formLabelWidth"
-          prop="parent_id"
+          prop="parentId"
         >
           <el-input
-            v-model="insertForm.parent_id"
+            v-model="insertForm.parentId"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -139,10 +139,10 @@
         <el-form-item
           label="父菜单id"
           :label-width="formLabelWidth"
-          prop="parent_id"
+          prop="parentId"
         >
           <el-input
-            v-model="updateForm.parent_id"
+            v-model="updateForm.parentId"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -159,18 +159,18 @@
 import icons from "@/utils/icons.js"
 
 export default {
-  name: "menu",
   data() {
     /**
-     * parent_id 校验
+     * parentId 校验
      */
-    var validateId = (rule, value, callback) => {
+    const validateId = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("父菜单不能为空"));
       }
-      if (!Number.isInteger(value)) {
+      if (!Number.isInteger(parseInt(value))) {
         return callback(new Error('请输入数字值'));
       }
+      callback();
     };
     return {
       tableData: [],
@@ -189,7 +189,7 @@ export default {
         icon: "",
         title: "",
         component: "",
-        parent_id: "",
+        parentId: "null",
       },
       updateForm: {
         id: "",
@@ -197,7 +197,7 @@ export default {
         icon: "",
         title: "",
         component: "",
-        parent_id: "",
+        parentId: "",
       },
       formLabelWidth: "120px",
       rules: {
@@ -207,15 +207,6 @@ export default {
             min: 1,
             max: 100,
             message: "path的长度位1-100之间",
-            trigger: "blur",
-          },
-        ],
-        icon: [
-          { required: true, message: "请输入图标", trigger: "blur" },
-          {
-            min: 1,
-            max: 50,
-            message: "icon的长度位1-20之间",
             trigger: "blur",
           },
         ],
@@ -237,7 +228,7 @@ export default {
             trigger: "blur",
           },
         ],
-        parent_id: [{ validator: validateId, trigger: "blur" }],
+        parentId: [{ validator: validateId, trigger: "blur" }],
       },
     };
   },
@@ -261,6 +252,7 @@ export default {
       this.$refs.insertForm.validate((valid) => {
         // 校验不通过
         if (!valid) return this.$message.error("提交信息不合法 检查后提交");
+        console.log("insertForm", this.insertForm);
         this.$ajax.post("/menu/insert", this.insertForm).then((res) => {
           this.$message.success(res.msg);
           this.findPage();
@@ -277,7 +269,7 @@ export default {
       this.updateForm.icon = row.icon;
       this.updateForm.title = row.title;
       this.updateForm.component = row.component;
-      this.updateForm.parent_id = row.parentId;
+      this.updateForm.parentId = row.parentId;
       this.updateFormVisible = true;
     },
     updateMenu() {

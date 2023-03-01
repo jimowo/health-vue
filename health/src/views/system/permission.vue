@@ -20,6 +20,7 @@
           <el-button
             class="web-button"
             type="primary"
+            v-hasPermission="['PERMISSION_INSERT']"
             @click="insertFormVisible = true"
             >添加权限</el-button
           >
@@ -31,13 +32,13 @@
         <el-table-column prop="code" label="代码"> </el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
-            <el-button @click="update(scope.row)" type="text" size="small"
+            <el-button @click="update(scope.row)" type="text" size="small" v-hasPermission="['PERMISSION_UPDATE']"
               >修改</el-button
             >
             <el-button
               type="text"
               size="small"
-              @click="deletePermission(scope.row.id)"
+              @click="deletePermission(scope.row.id)" v-hasPermission="['PERMISSION_DELETE']"
               >删除</el-button
             >
           </template>
