@@ -21,7 +21,10 @@
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')"
+            <el-button
+              type="primary"
+              @click="submitForm('ruleForm')"
+              :loading="load"
               >提交</el-button
             >
             <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -59,14 +62,17 @@ export default {
         password: [{ validator: validatePass, trigger: "blur" }],
       },
       url: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+      load: false,
     };
   },
   methods: {
     submitForm: function (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.load = true;
           this.$ajax.post("/user/login", this.ruleForm).then((res) => {
             // 如果数据校验成功 则向后端发送请求 进行登录
+            this.load = false;
             const tokenBody = res.data;
             let tokenHead = tokenBody.tokenHead;
             let token = tokenBody.token;
