@@ -27,7 +27,7 @@
         </el-col>
       </el-row>
       <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="id" label="主键" width="80"> </el-table-column>
+        <el-table-column type="index" width="80"> </el-table-column>
         <el-table-column prop="label" label="标签"></el-table-column>
         <el-table-column prop="code" label="代码"> </el-table-column>
         <el-table-column fixed="right" label="操作" width="100">

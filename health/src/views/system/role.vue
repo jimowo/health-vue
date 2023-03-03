@@ -26,7 +26,7 @@
         </el-col>
       </el-row>
       <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="id" label="主键" width="80"> </el-table-column>
+        <el-table-column type="index" width="80"> </el-table-column>
         <el-table-column prop="label" label="角色标签"></el-table-column>
         <el-table-column prop="code" label="角色码"> </el-table-column>
         <el-table-column label="权限" prop="permissions">
@@ -405,10 +405,6 @@ export default {
       if (this.$refs["updateForm"] !== undefined) {
         this.$refs["updateForm"].resetFields();
       }
-      // this.insertForm.menus = [];
-      // this.updateForm.menus = [];
-      // this.insertForm.permissions = [];
-      // this.updateForm.permissions = [];
     },
   },
 };

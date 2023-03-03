@@ -26,7 +26,7 @@
         </el-col>
       </el-row>
       <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="id" label="主键" width="80"> </el-table-column>
+        <el-table-column type="index" width="80"> </el-table-column>
         <el-table-column prop="path" label="路由"></el-table-column>
         <el-table-column prop="icon" label="图标"> </el-table-column>
         <el-table-column prop="title" label="名称"> </el-table-column>
