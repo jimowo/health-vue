@@ -8,6 +8,7 @@ import "@/utils/fontAwesome";
 import "@/assets/global.css";
 import "@/utils/permission.js";
 
+Vue.prototype.$qiniu = "http://rr3cw2msl.hd-bkt.clouddn.com/";
 
 Vue.config.productionTip = false;
 

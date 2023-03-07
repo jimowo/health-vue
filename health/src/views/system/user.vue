@@ -21,30 +21,73 @@
             class="web-button"
             type="primary"
             @click="insertFormVisible = true"
+            v-hasPermission="['PER_USER_INSERT']"
             >添加用户</el-button
           >
         </el-col>
       </el-row>
-      <el-table :data="tableData" stripe style="width: 100%">
+      <el-table
+        :data="tableData"
+        stripe
+        style="width: 100%"
+        v-loading="loading"
+      >
         <el-table-column type="index" width="80"> </el-table-column>
-        <el-table-column prop="username" label="用户名"></el-table-column>
+        <el-table-column prop="username" label="用户名"> </el-table-column>
         <el-table-column prop="nickname" label="昵称"> </el-table-column>
-        <el-table-column prop="sex" label="性别"> </el-table-column>
-        <el-table-column prop="address" label="地址"> </el-table-column>
-        <el-table-column prop="wxOpenid" label="微信ID"> </el-table-column>
-        <el-table-column prop="status" label="状态"> 
+        <el-table-column prop="sex" label="性别" :formatter="formatSex">
+        </el-table-column>
+        <el-table-column prop="avatar" label="头像">
           <template slot-scope="scope">
-            {{ scope.row.status }}
+            <el-image
+              style="width: 80px; height: 80px"
+              :src="scope.row.avatar"
+              :preview-src-list="previewAvatar(scope.row.avatar)"
+            >
+            </el-image>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="地址"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column prop="wxOpenid" label="微信ID"> </el-table-column>
+        <el-table-column prop="status" label="状态">
+          <template slot-scope="scope">
+            <el-switch
+              @change="updateStatus(scope.row)"
+              v-model="scope.row.status"
+            />
           </template>
         </el-table-column>
         <el-table-column prop="admin" label="是否为管理员">
           <template slot-scope="scope">
-            {{ scope.row.admin }}
+            <el-switch
+              @change="updateStatus(scope.row)"
+              v-model="scope.row.admin"
+            />
           </template>
         </el-table-column>
-        <el-table-column prop="phone" label="电话"> </el-table-column>
-        <el-table-column prop="email" label="邮箱"> </el-table-column>
-        <el-table-column prop="updateTime" label="更新时间"> </el-table-column>
+        <el-table-column
+          prop="phone"
+          label="电话"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="email"
+          label="邮箱"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="updateTime"
+          label="更新时间"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
         <el-table-column label="角色" prop="roles">
           <template slot-scope="scope">
             <el-popover placement="right" width="400" trigger="hover">
@@ -61,13 +104,18 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
-            <el-button @click="update(scope.row)" type="text" size="small"
+            <el-button
+              @click="update(scope.row)"
+              type="text"
+              size="small"
+              v-hasPermission="['PER_USER_UPDATE']"
               >修改</el-button
             >
             <el-button
               type="text"
               size="small"
               @click="deleteUser(scope.row.id)"
+              v-hasPermission="['PER_USER_DELETE']"
               >删除</el-button
             >
           </template>
@@ -89,14 +137,26 @@
       :visible.sync="insertFormVisible"
       @close="dialogClose"
     >
-      <el-form :model="insertForm" ref="insertForm" :rules="rules">
-        <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
+      <el-form :model="insertForm" ref="insertForm" :rules="rules" size="small">
+        <el-form-item
+          label="用户名"
+          :label-width="formLabelWidth"
+          prop="username"
+        >
           <el-input v-model="insertForm.username" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
+        <el-form-item
+          label="密码"
+          :label-width="formLabelWidth"
+          prop="password"
+        >
           <el-input v-model="insertForm.password" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="昵称" :label-width="formLabelWidth" prop="nickname">
+        <el-form-item
+          label="昵称"
+          :label-width="formLabelWidth"
+          prop="nickname"
+        >
           <el-input v-model="insertForm.nickname" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth" prop="sex">
@@ -108,15 +168,42 @@
         </el-form-item>
         <el-form-item label="头像" :label-width="formLabelWidth" prop="avatar">
           <el-input v-model="insertForm.avatar" autocomplete="off"></el-input>
+          <el-upload
+            class="avatar-uploader"
+            :action="action"
+            :headers="uploadHeaders"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
-        <el-form-item label="微信ID" :label-width="formLabelWidth" prop="wxOpenid">
+        <el-form-item
+          label="微信ID"
+          :label-width="formLabelWidth"
+          prop="wxOpenid"
+        >
           <el-input v-model="insertForm.wxOpenid" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="状态" :label-width="formLabelWidth" prop="status">
-          <el-switch v-model="insertForm.status" active-color="#13ce66" inactive-color="#ff4949"/>
+          <el-switch
+            v-model="insertForm.status"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          />
         </el-form-item>
-        <el-form-item label="是否管理员" :label-width="formLabelWidth" prop="admin">
-          <el-switch v-model="insertForm.admin" active-color="#13ce66" inactive-color="#ff4949"/>
+        <el-form-item
+          label="是否管理员"
+          :label-width="formLabelWidth"
+          prop="admin"
+        >
+          <el-switch
+            v-model="insertForm.admin"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          />
         </el-form-item>
         <el-form-item label="电话" :label-width="formLabelWidth" prop="phone">
           <el-input v-model="insertForm.phone" autocomplete="off"></el-input>
@@ -124,11 +211,7 @@
         <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
           <el-input v-model="insertForm.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item
-          label="角色"
-          :label-width="formLabelWidth"
-          prop="roles"
-        >
+        <el-form-item label="角色" :label-width="formLabelWidth" prop="roles">
           <el-select
             v-model="insertForm.roles"
             multiple
@@ -165,13 +248,25 @@
             :disabled="true"
           ></el-input>
         </el-form-item>
-        <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
+        <el-form-item
+          label="用户名"
+          :label-width="formLabelWidth"
+          prop="username"
+        >
           <el-input v-model="updateForm.username" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
+        <el-form-item
+          label="密码"
+          :label-width="formLabelWidth"
+          prop="password"
+        >
           <el-input v-model="updateForm.password" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="昵称" :label-width="formLabelWidth" prop="nickname">
+        <el-form-item
+          label="昵称"
+          :label-width="formLabelWidth"
+          prop="nickname"
+        >
           <el-input v-model="updateForm.nickname" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth" prop="sex">
@@ -184,14 +279,30 @@
         <el-form-item label="头像" :label-width="formLabelWidth" prop="avatar">
           <el-input v-model="updateForm.avatar" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="微信ID" :label-width="formLabelWidth" prop="wxOpenid">
+        <el-form-item
+          label="微信ID"
+          :label-width="formLabelWidth"
+          prop="wxOpenid"
+        >
           <el-input v-model="updateForm.wxOpenid" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="状态" :label-width="formLabelWidth" prop="status">
-          <el-switch v-model="updateForm.status" active-color="#13ce66" inactive-color="#ff4949"/>
+          <el-switch
+            v-model="updateForm.status"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          />
         </el-form-item>
-        <el-form-item label="是否管理员" :label-width="formLabelWidth" prop="admin">
-          <el-switch v-model="updateForm.admin" active-color="#13ce66" inactive-color="#ff4949"/>
+        <el-form-item
+          label="是否管理员"
+          :label-width="formLabelWidth"
+          prop="admin"
+        >
+          <el-switch
+            v-model="updateForm.admin"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          />
         </el-form-item>
         <el-form-item label="电话" :label-width="formLabelWidth" prop="phone">
           <el-input v-model="updateForm.phone" autocomplete="off"></el-input>
@@ -199,11 +310,7 @@
         <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
           <el-input v-model="updateForm.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item
-          label="角色"
-          :label-width="formLabelWidth"
-          prop="roles"
-        >
+        <el-form-item label="角色" :label-width="formLabelWidth" prop="roles">
           <el-select
             v-model="updateForm.roles"
             multiple
@@ -248,13 +355,15 @@ export default {
         pageSize: 5,
         queryString: null,
       },
+      loading: false,
       insertFormVisible: false,
       updateFormVisible: false,
+      // 添加用户表单
       insertForm: {
         username: "",
         password: "",
         nickname: "",
-        sex: "",
+        sex: "2",
         avatar: "",
         address: "",
         avatar: "",
@@ -265,6 +374,7 @@ export default {
         email: "",
         roles: [],
       },
+      // 修改用户表单
       updateForm: {
         id: "",
         username: "",
@@ -282,23 +392,56 @@ export default {
         roles: [],
       },
       roleOptions: [],
-      formLabelWidth: "80px",
+      formLabelWidth: "100px",
+      imageUrl: "",
+      action: "/qiniu/upload",
+      uploadHeaders: {
+        Authorization: sessionStorage.getItem("token")
+      },
+      // 表单校验规则
       rules: {
-        code: [
-          { required: true, message: "请输入角色码", trigger: "blur" },
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
           {
             min: 1,
             max: 20,
-            message: "path的长度位1-20之间",
+            message: "用户名的长度位1-20之间",
             trigger: "blur",
           },
         ],
-        label: [
-          { required: true, message: "请输入角色标签", trigger: "blur" },
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 1,
+            max: 100,
+            message: "密码的长度位1-100之间",
+            trigger: "blur",
+          },
+        ],
+        nickname: [
+          { required: true, message: "请输入昵称", trigger: "blur" },
           {
             min: 1,
             max: 50,
-            message: "title的长度位1-50之间",
+            message: "昵称的长度位1-50之间",
+            trigger: "blur",
+          },
+        ],
+        phone: [
+          { required: true, message: "请输入电话", trigger: "blur" },
+          {
+            min: 1,
+            max: 20,
+            message: "电话的长度位1-20之间",
+            trigger: "blur",
+          },
+        ],
+        email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          {
+            min: 1,
+            max: 50,
+            message: "邮箱的长度位1-50之间",
             trigger: "blur",
           },
         ],
@@ -314,10 +457,18 @@ export default {
      * 分页查询请求
      */
     findPage() {
-      this.$ajax.post("/user/findPage", this.queryInfo).then((res) => {
-        this.tableData = res.rows;
-        this.totalPage = res.total;
-      });
+      this.loading = true;
+      this.$ajax
+        .post("/user/findPage", this.queryInfo)
+        .then((res) => {
+          this.tableData = res.rows;
+          this.totalPage = res.total;
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.loading = false;
+          this.$message.warning("页面信息获取失败", err.msg);
+        });
     },
     /**
      * 添加权限信息
@@ -351,9 +502,8 @@ export default {
       this.updateForm.phone = row.phone;
       this.updateForm.email = row.email;
       this.updateForm.roles = [];
-      if (row.roles != null && row.roles.length > 0)
-      {
-        row.roles.forEach(element => {
+      if (row.roles != null && row.roles.length > 0) {
+        row.roles.forEach((element) => {
           this.updateForm.roles.push(element.id);
         });
       }
@@ -429,6 +579,84 @@ export default {
       if (this.$refs["updateForm"] !== undefined) {
         this.$refs["updateForm"].resetFields();
       }
+      this.imageUrl = "";
+    },
+    updateStatus(row) {
+      this.updateForm.id = row.id;
+      this.updateForm.username = row.username;
+      this.updateForm.password = row.password;
+      this.updateForm.nickname = row.nickname;
+      this.updateForm.sex = row.sex.toString();
+      this.updateForm.avatar = row.avatar;
+      this.updateForm.address = row.address;
+      this.updateForm.wxOpenid = row.wxOpenid;
+      this.updateForm.status = row.status;
+      this.updateForm.admin = row.admin;
+      this.updateForm.phone = row.phone;
+      this.updateForm.email = row.email;
+      this.updateForm.roles = [];
+      if (row.roles != null && row.roles.length > 0) {
+        row.roles.forEach((element) => {
+          this.updateForm.roles.push(element.id);
+        });
+      }
+      this.$ajax.put("/user/update", this.updateForm).then((res) => {
+        this.$message.success(res.msg);
+        this.findPage();
+      });
+    },
+    /**
+     * 头像预览
+     * @param {头像链接} src
+     */
+    previewAvatar(src) {
+      let srcList = [];
+      srcList.push(src);
+      return srcList;
+    },
+    /**
+     * 格式化性别
+     * @param {行数据} row
+     */
+    formatSex(row) {
+      switch (row.sex) {
+        case 0:
+          return "男";
+        case 1:
+          return "女";
+        default:
+          return "未知";
+      }
+    },
+    /**
+     * 头像上传成功事件
+     * @param {响应} res 
+     * @param {文件信息} file 
+     */
+    handleAvatarSuccess(res, file) {
+      console.log(res);
+      this.imageUrl = this.$qiniu + res.data;
+      this.insertForm.avatar = this.imageUrl;
+      this.updateForm.avatar = this.imageUrl;
+    },
+    /**
+     * 头像上传前响应事件
+     * @param {文件信息} file s
+     */
+    beforeAvatarUpload(file) {
+      const isJPG =
+        file.type === "image/jpeg" ||
+        file.type === "image/png" ||
+        file.type === "image/jpg";
+      const isLt2M = file.size / 1024 / 1024 < 10;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG/PNG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 10MB!");
+      }
+      return isJPG && isLt2M;
     },
   },
 };
@@ -443,5 +671,28 @@ export default {
 }
 .el-table {
   margin-top: 20px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

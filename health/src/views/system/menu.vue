@@ -25,7 +25,7 @@
           >
         </el-col>
       </el-row>
-      <el-table :data="tableData" stripe style="width: 100%">
+      <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
         <el-table-column type="index" width="80"> </el-table-column>
         <el-table-column prop="path" label="路由"></el-table-column>
         <el-table-column prop="icon" label="图标"> </el-table-column>
@@ -182,6 +182,7 @@ export default {
         pageSize: 5,
         queryString: null,
       },
+      loading: false,
       insertFormVisible: false,
       updateFormVisible: false,
       insertForm: {
@@ -240,9 +241,14 @@ export default {
      * 分页查询请求
      */
     findPage() {
+      this.loading = true;
       this.$ajax.post("/menu/findPage", this.queryInfo).then((res) => {
         this.tableData = res.rows;
         this.totalPage = res.total;
+        this.loading = false;
+      }).catch((err) => {
+        this.loading = false;
+        this.$message.warning("页面信息获取失败", err.msg);
       });
     },
     /**

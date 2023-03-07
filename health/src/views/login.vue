@@ -80,6 +80,9 @@ export default {
             // 跳转主页
             this.$router.push("/");
             this.$message.success(res.msg);
+          }).catch((err) => {
+            this.load = false;
+            this.$message.warning("用户名或密码错误");
           });
         } else {
           this.$message.error("用户名或密码不合法 检查后提交");

@@ -39,7 +39,7 @@
               <span>{{ parentMenu.title }}</span>
             </template>
             <el-menu-item :index="children.path" v-for="(children, i) in parentMenu.children" :key="i" @click="savePath(children.path)">
-              <template>
+              <template slot="title">
                 <v-icon :name="children.icon" scale="1.2" class="menu-icon"/>
                 <span>{{ children.title }}</span>
               </template>
