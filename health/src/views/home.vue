@@ -33,7 +33,7 @@
               clearable>
           </el-input>
           </span>
-          <el-submenu :index="parentMenu.path" v-for="(parentMenu, index) in menus" :key="index">
+          <el-submenu :index="index + ''" v-for="(parentMenu, index) in menus" :key="index">
             <template slot="title">
               <v-icon :name="parentMenu.icon" scale="1.5" class="menu-icon"/>
               <span>{{ parentMenu.title }}</span>
