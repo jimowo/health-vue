@@ -95,7 +95,6 @@ export default {
   created() {
     // 更新名字
     this.name = this.username;
-    // console.log("菜单", this.menus)
   },
   data() {
     return {
