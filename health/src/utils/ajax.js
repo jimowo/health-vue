@@ -15,17 +15,20 @@ const ajax = axios.create({
 /**
  * 请求拦截器
  */
-ajax.interceptors.request.use((config) => {
-    console.log("请求 ", config);
-    const token = sessionStorage.getItem("token");
-    if (token) {
-        // 把token 加入header 中
-        config.headers["Authorization"] = token;
+ajax.interceptors.request.use(
+    (config) => {
+        console.log("请求 ", config);
+        const token = sessionStorage.getItem("token");
+        if (token) {
+            // 把token 加入header 中
+            config.headers["Authorization"] = token;
+        }
+        return config;
+    },
+    (err) => {
+        console.log("请求异常", err);
     }
-    return config;
-}, (err => {
-    console.log("请求异常", err);
-}));
+);
 
 /**
  * 响应拦截器

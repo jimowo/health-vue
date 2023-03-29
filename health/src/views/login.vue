@@ -25,9 +25,10 @@
               type="primary"
               @click="submitForm('ruleForm')"
               :loading="load"
-              >提交</el-button
+              >用户登录</el-button
             >
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
+            <el-button @click="resetForm('ruleForm')">清空表格</el-button>
+            <el-button type="warning" @click="forgetPwd()">忘记密码</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -92,6 +93,12 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    /**
+     * 忘记密码
+     */
+    forgetPwd() {
+      this.$router.push("/forget");
     },
   },
 };
